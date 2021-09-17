@@ -41,6 +41,7 @@ const InputWrapStyled = styled.div`
   display: flex;
   align-items: center;
   height: ${props => props.theme.inputs.sizes[props.size].height};
+  width: ${props => props.theme.inputs.sizes[props.size].width};
 
   svg {
     margin-left: -37px;
@@ -59,6 +60,7 @@ export default function Input(props) {
         name,
         onChange,
         onBlur,
+        onKeyPress,
         value,
         placeholder,
         disabled,
@@ -67,10 +69,11 @@ export default function Input(props) {
         success,
         size = 'large',
         withLabel,
-        withStatusIcon
+        withStatusIcon,
+        variant
     } = props
 
-    const inputVariant = success && 'success' || error && 'error' || 'default'
+    const inputVariant = success && 'success' || error && 'error' || variant && variant || 'default'
 
     return (
         <>
@@ -83,12 +86,14 @@ export default function Input(props) {
                              name={name}
                              onChange={onChange}
                              onBlur={onBlur}
+                             onKeyPress={onKeyPress}
                              value={value}
                              placeholder={placeholder}
                              disabled={disabled}
                              error={error}
                              size={size}
-                             variant={inputVariant}/>
+                             variant={inputVariant}
+                />
                 {withStatusIcon && error && <CloseIcon width={24} height={24}/>}
                 {withStatusIcon && success && <TickIcon width={24} height={24}/>}
             </InputWrapStyled>

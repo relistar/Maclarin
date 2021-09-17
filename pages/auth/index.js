@@ -10,7 +10,7 @@ export async function getServerSideProps({req, res, query}) {
     await applySession(req, res, options);
 
     req.session.set("token", query)
-    console.log(query)
+
     await req.session.save()
 
     res.statusCode = 302

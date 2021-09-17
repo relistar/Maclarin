@@ -1,5 +1,5 @@
-import React from "react"
-import {CardIcon, ChevronRightIcon, RemoveIcon, RingBellIcon} from "/components/Icon";
+import React, {useState} from "react"
+import {CardIcon, ChevronRightIcon, CloseIcon, RemoveIcon, RingBellIcon} from "/components/Icon";
 import Button from "/components/Button";
 import theme from "/shared/theme";
 import Link from "/components/Link";
@@ -17,239 +17,205 @@ import Layout from "../../../components/Layout";
 import {applySession} from "next-iron-session";
 import {options} from "../../../session";
 import {withAuthServerSideProps} from "../../../session/withAuth";
-import {BASE_API} from "../../../shared/api";
+import {API, BASE_API} from "../../../shared/api";
 import {selectStyles} from "../../../shared/selectStyles";
 import Select, {components} from "react-select";
+import {Formik} from "formik";
+import DotsLoader from "../../../components/DotsLoader";
 
 SwiperCore.use([Scrollbar, Mousewheel]);
 
-export default function AssemblyConfirm({orderT}) {
-    const order = {
-        orderId: 2,
-        orderNum: 1,
-        customer: {
-            name: 'Иванов Иван',
-            phoneNumber: '+7 904 018 91 91'
-        },
-        delivery: {
-            type: {
-                deliveryTypeId: 56423523,
-                title: 'Самовывоз'
-            },
-            address: null,
-            date: null
-        },
-        shopAddress: {
-            selected: 52342352346,
-            title: 'Тверь, Коминтерна, 95',
-            variants: null
-        },
-        paymentInfo: {
-            type: {
-                paymentTypeId: 976,
-                name: 'cash',
-                title: 'Наличные'
-            },
-            status: {
-                isPaid: false,
-                title: 'Не оплачено'
-            }
-        },
-        creationDate: new Date(1626977813 * 1000),
-        status: {
-            type: 'assembly',
-            title: 'Сборка'
-        },
-        totalSum: 155840.00,
-        lines: [
-            {
-                orderLineId: 656234,
-                type: 'product',
-                article: '1-Ф22',
-                name: 'Баранина фермерская, бедро',
-                quantity: 500,
-                factQuantity: 505,
-                uom: {
-                    value: 'грамм',
-                    price: 1809.00,
-                    min: 0,
-                    max: 1000,
-                    step: 1
-                },
-                price: 404.00
-            },
-            {
-                orderLineId: 656235,
-                type: 'product',
-                article: '1-Ф23',
-                name: 'Бедро индейки',
-                quantity: 500,
-                factQuantity: 590,
-                uom: {
-                    value: 'грамм',
-                    price: 70.00,
-                    min: 0,
-                    max: 1000,
-                    step: 1
-                },
-                price: 55.00
-            },
-            {
-                orderLineId: 656236,
-                type: 'product',
-                article: '1-Ф25',
-                name: 'Макаронные изделия бабочка, 350г',
-                quantity: 3,
-                factQuantity: 1,
-                uom: {
-                    value: 'штуки',
-                    price: 70.00,
-                    min: 0,
-                    max: 1000,
-                    step: 1
-                },
-                price: 85.00
-            },
-            {
-                orderLineId: 656237,
-                type: 'product',
-                article: '1-Ф27',
-                name: 'Авокадо',
-                quantity: 3,
-                factQuantity: 1,
-                uom: {
-                    value: 'штуки',
-                    price: 300.00,
-                    min: 0,
-                    max: 1000,
-                    step: 1
-                },
-                price: 140.00
-            },
-            {
-                orderLineId: 6538,
-                type: 'product',
-                article: '1-Ф26',
-                name: 'Гнезда-Лапша, 500г',
-                quantity: 3,
-                factQuantity: 1,
-                uom: {
-                    value: 'штуки',
-                    price: 70.00,
-                    min: 0,
-                    max: 1000,
-                    step: 1
-                },
-                price: 140.00
-            },
-            {
-                orderLineId: 71644588,
-                type: 'product',
-                article: '1-Ф26',
-                name: 'Гнезда-Лапша, 500г',
-                quantity: 3,
-                factQuantity: 1,
-                uom: {
-                    value: 'штуки',
-                    price: 70.00,
-                    min: 0,
-                    max: 1000,
-                    step: 1
-                },
-                price: 140.00
-            },
-            {
-                orderLineId: 178435,
-                type: 'product',
-                article: '1-Ф26',
-                name: 'Гнезда-Лапша, 500г',
-                quantity: 3,
-                factQuantity: 1,
-                uom: {
-                    value: 'штуки',
-                    price: 70.00,
-                    min: 0,
-                    max: 1000,
-                    step: 1
-                },
-                price: 140.00
-            },
-            {
-                orderLineId: 748256,
-                type: 'product',
-                article: '1-Ф26',
-                name: 'Гнезда-Лапша, 500г',
-                quantity: 3,
-                factQuantity: 1,
-                uom: {
-                    value: 'штуки',
-                    price: 70.00,
-                    min: 0,
-                    max: 1000,
-                    step: 1
-                },
-                price: 140.00
-            },
-            {
-                orderLineId: 623456,
-                type: 'product',
-                article: '1-Ф26',
-                name: 'Гнезда-Лапша, 500г',
-                quantity: 3,
-                factQuantity: 1,
-                uom: {
-                    value: 'штуки',
-                    price: 70.00,
-                    min: 0,
-                    max: 1000,
-                    step: 1
-                },
-                price: 140.00
-            },
-            {
-                orderLineId: 65625345,
-                type: 'product',
-                article: '1-Ф26',
-                name: 'Гнезда-Лапша, 500г',
-                quantity: 3,
-                factQuantity: 1,
-                uom: {
-                    value: 'штуки',
-                    price: 70.00,
-                    min: 0,
-                    max: 1000,
-                    step: 1
-                },
-                price: 140.00
-            },
-        ],
-        comment: 'Упаковать в пакет',
-        serviceComment: null,
-        promoCode: {
-            isValid: true,
-            value: 'ERUJD002'
-        }
-    }
+function Loader() {
+    return (
+        <Flex theme={theme} variant={'loader'}>
+            <Box theme={theme} variant={'loader.content'}>
+                <DotsLoader/>
+            </Box>
+        </Flex>
+    );
+}
+
+export default function AssemblyConfirm({orderT, token}) {
+    const [promoCodePopupOpen, setPromoCodePopupOpen] = useState(false)
+    const [someSubmit, setSomeSubmit] = useState(false)
+    const [order, setOrder] = useState(orderT)
 
     const lineTypesMap = {
         'Товар': 'product',
         'Услуга': 'service',
     }
 
-    const deliveryOptions = orderT.delivery.type.variants.map(variant => ({
+    const messages = {
+        newPromoCode: {
+            valid: 'Промокод введен',
+            invalid: 'Введите промокод'
+        }
+    }
+
+    const deliveryOptions = order.delivery.type.variants.map(variant => ({
         value: variant.deliveryTypeId,
         label: variant.title
     }))
-    const deliveryOptionDefault = deliveryOptions[0]
+    const deliveryOptionDefault = deliveryOptions.filter(option => option.value === order.delivery.type.selected)
 
-    const shopOptions = orderT.shop.variants.map(variant => ({value: variant.shopId, label: variant.title}))
-    const shopOptionDefault = shopOptions[0]
+    const shopOptions = order.shop.variants.map(variant => ({value: variant.shopId, label: variant.title}))
+    const shopOptionDefault = shopOptions.filter(option => option.value === order.shop.selected)
 
-    console.log(deliveryOptions)
-    console.log(deliveryOptionDefault)
+    const promoCodeOptions = [
+        {value: null, label: 'Промокод не применен'},
+        {value: 'select', label: 'Ввести новый'},
+    ]
 
-    console.log(shopOptions)
-    console.log(shopOptionDefault)
+    const promoCodeOptionDefault = promoCodeOptions[0]
+
+    function validate(values) {
+
+    }
+
+    function handleSubmit(values, {setSubmitting}) {
+
+    }
+
+    function handleDeliveryTypeChange(arg) {
+        const payload = {deliveryTypeId: arg.value, orderId: order.orderId}
+
+        API.changeDeliveryType(payload, token).then(res => {
+            const payload = res.data
+            setOrder(payload)
+            console.log(payload)
+        }).catch(res => {
+        })
+    }
+
+    function handleAssemblyAddressChange(arg) {
+        const payload = {shopId: arg.value, orderId: order.orderId}
+
+        API.changeShop(payload, token).then(res => {
+            const payload = res.data
+            setOrder(payload)
+            console.log(payload)
+        }).catch(res => {
+        })
+
+    }
+
+    function handleCommentChange(event) {
+        const newOrder = {...order}
+        newOrder.comment = event.target.value
+        setOrder(newOrder)
+    }
+
+    function handleServiceCommentChange(event) {
+        const newOrder = {...order}
+        newOrder.serviceComment = event.target.value
+        setOrder(newOrder)
+    }
+
+    function handleCommentsSubmit() {
+        const comments = {
+            comment: order.comment,
+            serviceComment: order.serviceComment
+        }
+
+        const query = {orderId: order.orderId}
+
+        API.changeComments(query, comments, token).then(res => {
+            const payload = res.data
+            setOrder(payload)
+            console.log(payload)
+        }).catch(res => {
+        })
+    }
+
+    function handleCommentsEnter(event) {
+        if (event.key === 'Enter') {
+            handleCommentsSubmit()
+            event.preventDefault()
+        }
+    }
+
+    function handleDeliveryAddressChange(event) {
+        const newOrder = {...order}
+        newOrder.delivery.address = event.target.value
+        setOrder(newOrder)
+    }
+
+    function handleDeliveryAddressEnter(event) {
+        if (event.key === 'Enter') {
+            handleDeliveryAddressSubmit()
+            event.preventDefault()
+        }
+    }
+
+    function handleDeliveryAddressSubmit() {
+        const query = {orderId: order.orderId}
+
+        API.changeDeliveryAddress(query, +order.delivery.address, token).then(res => {
+            const payload = res.data
+            console.log(payload)
+            setOrder(payload)
+        }).catch(res => {
+        })
+    }
+
+
+    function submitLineQuantityChange(lineId, value) {
+        const query = {orderId: order.orderId, orderLineId: lineId}
+
+        const quantity = {
+            quantity: value,
+            factQuantity: 0
+        }
+
+        API.changeOrderLineQuantity(query, quantity, token).then(res => {
+            const payload = res.data
+            setOrder(payload)
+        }).catch(res => {
+        })
+    }
+
+    function changeOrderLineQuantityState(lineId, value) {
+        const newOrder = {...order}
+
+        newOrder.lines.forEach(line => {
+            if (lineId === line.order_line_id) {
+                line.quantity = value
+            }
+        })
+
+        setOrder(newOrder)
+    }
+
+    function handleLineQuantityChangeForButtons(lineId) {
+        return function (value) {
+            changeOrderLineQuantityState(lineId, value);
+            submitLineQuantityChange(lineId, value);
+        }
+    }
+
+    function handleLineQuantityChangeForInput(lineId) {
+        return function (value) {
+            changeOrderLineQuantityState(lineId, value);
+        }
+    }
+
+    function handleLineQuantityBlur(lineId) {
+        return function (event) {
+            console.log(event.target)
+
+            changeOrderLineQuantityState(lineId, event.target.value);
+            submitLineQuantityChange(lineId, event.target.value);
+        }
+    }
+
+    function handleLineQuantityEnter(lineId) {
+        return function (event) {
+            if (event.key === 'Enter') {
+                changeOrderLineQuantityState(lineId, event.target.value);
+                submitLineQuantityChange(lineId, event.target.value);
+            }
+        }
+    }
 
     const DropdownIndicator = props => {
         return (
@@ -269,13 +235,13 @@ export default function AssemblyConfirm({orderT}) {
                         <Flex theme={theme} variant='orderHeader.customer' alignItems='center'
                               flexWrap={'nowrap'}>
                             <Box theme={theme} variant={'orderHeader.field.title'}>Заказчик</Box>
-                            <Box theme={theme} variant={'orderHeader.field.value'}>{orderT.customer.name}</Box>
+                            <Box theme={theme} variant={'orderHeader.field.value'}>{order.customer.name}</Box>
                         </Flex>
                         <Flex theme={theme} variant='orderHeader.phone' alignItems='center'>
                             <Box theme={theme} variant={'orderHeader.field.title'}>Телефон</Box>
                             <Box theme={theme} variant={'orderHeader.field.value'}>
-                                <Link href={`tel:${orderT.customer.phoneNumber}`}
-                                      color={theme.colors.green}>{orderT.customer.phoneNumber}</Link>
+                                <Link href={`tel:${order.customer.phoneNumber}`}
+                                      color={theme.colors.green}>{order.customer.phoneNumber}</Link>
                             </Box>
                         </Flex>
                     </Flex>
@@ -289,18 +255,22 @@ export default function AssemblyConfirm({orderT}) {
                                         isClearable={false}
                                         styles={selectStyles}
                                         options={deliveryOptions}
-                                        defaultValue={deliveryOptionDefault}/>
+                                        defaultValue={deliveryOptionDefault}
+                                        onChange={handleDeliveryTypeChange}/>
                             </Box>
                         </Flex>
                         <Flex theme={theme} variant='orderHeader.address' alignItems='center'>
-                            <Box theme={theme} variant={'orderHeader.field.title'}>Адрес сборки</Box>
+                            {order.delivery.type.selected === 1 ? (
+                                <Box theme={theme} variant={'orderHeader.field.title'}>Адрес сборки</Box>) : (
+                                <Box theme={theme} variant={'orderHeader.field.title'}>Адрес самовывоза</Box>)}
                             <Box theme={theme} variant={'orderHeader.field.value'}>
                                 <Select components={{DropdownIndicator}}
                                         isSearchable={false}
                                         isClearable={false}
                                         styles={selectStyles}
                                         options={shopOptions}
-                                        defaultValue={shopOptionDefault}/>
+                                        defaultValue={shopOptionDefault}
+                                        onChange={handleAssemblyAddressChange}/>
                             </Box>
                         </Flex>
                     </Flex>
@@ -311,36 +281,46 @@ export default function AssemblyConfirm({orderT}) {
                         <Flex theme={theme}
                               variant='orderHeader.paymentWrap'
                               alignItems='center'
-                              justifyContent='space-between'>
-                            <Flex theme={theme} variant={'orderHeader.payment'} justifyContent={'space-between'}>
+                              justifyContent={order.delivery.type.selected === 1 ? 'space-between' : 'flex-end'}>
+                            <Flex theme={theme} variant={'orderHeader.payment'} justifyContent={order.delivery.type.selected === 1 ? 'space-between' : 'flex-end'}>
                                 <Flex theme={theme} justifyContent={'flex-start'}>
                                     <Box theme={theme} variant={'orderHeader.payment.icon'}>
                                         <CardIcon width={15} height={12} fill={theme.colors.green}/>
                                     </Box>
                                     <Box theme={theme}
-                                         variant={'orderHeader.payment.method'}>{orderT.paymentInfo.type.title}</Box>/
-                                    {orderT.paymentInfo.status.isPaid ? (
+                                         variant={'orderHeader.payment.method'}>Картой</Box>/
+                                    {order.paymentInfo.status.isPaid ? (
                                         <Box theme={theme}
-                                             variant={'orderHeader.payment.statusPaid'}>{orderT.paymentInfo.status.title}</Box>
+                                             variant={'orderHeader.payment.statusPaid'}>{order.paymentInfo.status.title}</Box>
                                     ) : (
                                         <Box theme={theme}
-                                             variant={'orderHeader.payment.status'}>{orderT.paymentInfo.status.title}</Box>)}
+                                             variant={'orderHeader.payment.status'}>{order.paymentInfo.status.title}</Box>)}
                                 </Flex>
-                                <Box theme={theme}
-                                     variant={'orderHeader.delivery.estimation'}>Доставить 25.07.2021, 00:00</Box>
+                                {order.delivery.type.selected === 1 && (
+                                    <Box theme={theme}
+                                         variant={'orderHeader.delivery.estimation'}>Доставить 25.07.2021, 00:00</Box>)}
                             </Flex>
                         </Flex>
-                        <Flex theme={theme} variant='orderHeader.address' alignItems='center'>
-                            <Box theme={theme} variant={'orderHeader.field.title'}>Адрес доставки</Box>
-                            <Box theme={theme} variant={'orderHeader.field.value'}>
-                                <Input variant='default' size='small'
-                                       value={orderT.delivery.address}/>
-                            </Box>
-                        </Flex>
+                        {order.delivery.type.selected === 1 ? (
+                            <Flex theme={theme} variant='orderHeader.address' alignItems='center'>
+                                <Box theme={theme} variant={'orderHeader.field.title'}>Адрес доставки</Box>
+                                <Box theme={theme} variant={'orderHeader.field.value'}>
+                                    <Input variant='default' size='small'
+                                           value={order.delivery.address}
+                                           onChange={handleDeliveryAddressChange}
+                                           onBlur={handleDeliveryAddressSubmit}
+                                           onKeyPress={handleDeliveryAddressEnter}
+                                    />
+                                </Box>
+                            </Flex>
+                        ) : (
+                            <Box theme={theme}
+                                 variant={'orderHeader.delivery.estimation'}>Доставить 25.07.2021, 00:00</Box>
+                        )}
+
                     </Flex>
                 </Flex>
             </Flex>
-
             <Flex theme={theme} variant={'order'}
                   flexDirection={'column'}>
                 <Flex theme={theme} variant={'order.heading'}
@@ -350,7 +330,7 @@ export default function AssemblyConfirm({orderT}) {
                           variant={'order.heading.col.l'}
                           alignItems={'flex-end'}
                           width={theme.variants.order.heading.col.l.width}>
-                        <Box theme={theme} variant={'order.heading.orderNum'}>Заказ №{orderT.orderNum}</Box>
+                        <Box theme={theme} variant={'order.heading.orderNum'}>Заказ №{order.orderNum}</Box>
                         <Flex theme={theme} variant={'order.heading.date'}>
                             {/*<Box theme={theme}
                                  variant={'order.heading.date.dom'}>от {format(order.creationDate, DATE_FORMAT)}</Box>
@@ -375,7 +355,7 @@ export default function AssemblyConfirm({orderT}) {
                                     <RingBellIcon width={14} height={14} fill={theme.colors.orange}/>
                                 </Box>
                                 <Box theme={theme} variant={'order.heading.status.value.label'}>
-                                    <Link href="#" color={theme.colors.orange}>{orderT.status.title}</Link>
+                                    <Link href="#" color={theme.colors.orange}>{order.status.title}</Link>
                                 </Box>
                             </Flex>
                         </Flex>
@@ -385,9 +365,10 @@ export default function AssemblyConfirm({orderT}) {
                     <Swiper direction={'vertical'} slidesPerView={'auto'} freeMode={true} scrollbar={true}
                             mousewheel={true} className="orderLines">
                         <SwiperSlide>
-                            {orderT.lines.map(line => {
+                            {order.lines.map(line => {
                                 return line.type === 'Товар' ? (
-                                    <Flex theme={theme} variant={'order.lines.line'} justifyContent={'space-between'} key={line.order_line_id}>
+                                    <Flex theme={theme} variant={'order.lines.line'} justifyContent={'space-between'}
+                                          key={line.order_line_id}>
                                         <Flex theme={theme}
                                               variant={'order.lines.line.col.first'}
                                               justifyContent={theme.variants.order.lines.line.col.first.justifyContent}>
@@ -413,7 +394,14 @@ export default function AssemblyConfirm({orderT}) {
                                                                  value={line.factQuantity}/>*/}
 
                                                     <InputNumber dataTitle={'Кол-во'}
-                                                                 dataUom={line.uom.value} value={line.quantity}/>
+                                                                 dataUom={line.uom.value} value={line.quantity}
+                                                                 min={line.uom.min}
+                                                                 max={line.uom.max}
+                                                                 step={line.uom.step}
+                                                                 onChangeInputHandler={handleLineQuantityChangeForInput(line.order_line_id)}
+                                                                 onChangeHandler={handleLineQuantityChangeForButtons(line.order_line_id)}
+                                                                 onBlur={handleLineQuantityBlur(line.order_line_id)}
+                                                                 onKeyPress={handleLineQuantityEnter(line.order_line_id)}/>
                                                 </Box>
                                             </Box>
                                         </Flex>
@@ -434,91 +422,59 @@ export default function AssemblyConfirm({orderT}) {
                                         </Flex>
                                     </Flex>
                                 ) : (
-                                    <></>
+                                    <Flex theme={theme} variant={'order.lines.line'} justifyContent={'space-between'}
+                                          key={line.order_line_id}>
+                                        <Flex theme={theme}
+                                              variant={'order.lines.line.col.first'}
+                                              justifyContent={theme.variants.order.lines.line.col.first.justifyContent}>
+                                            <Box theme={theme} variant={'order.lines.line.col.first.col.l'}>
+                                                <Box theme={theme} variant={'order.lines.article'}/>
+                                            </Box>
+                                            <Box theme={theme} variant={'oorder.lines.line.col.first.col.r'}>
+                                                <Box theme={theme} variant={'order.lines.nameBold'}>
+                                                    {line.name}
+                                                </Box>
+                                            </Box>
+                                        </Flex>
+                                        <Flex theme={theme} variant={'order.lines.line.col.second'}>
+                                            <Box theme={theme} variant={'order.lines.line.col.second.col.l'}>
+                                                <Box theme={theme} variant={'order.lines.quantity'}/>
+                                            </Box>
+                                            <Box theme={theme} variant={'order.lines.line.col.second.col.r'}>
+                                                <Box theme={theme} variant={'order.lines.factQuantity'}>
+                                                </Box>
+                                            </Box>
+                                        </Flex>
+                                        <Flex theme={theme} variant={'order.lines.line.col.third'}>
+                                            <Flex theme={theme} variant={'order.lines.line.col.third.col.l'}>
+                                                <Box theme={theme} variant={'order.lines.uomPrice'}>
+                                                    <InputNumber dataTitle={'Кол-во'}
+                                                                 dataUom={line.uom.value} value={line.quantity}
+                                                                 withoutButtons/>
+                                                </Box>
+                                                <Box theme={theme} variant={'order.lines.price'}>
+                                                    {currency(line.price, PRICE_FORMAT).format()}
+                                                </Box>
+                                            </Flex>
+                                            <Flex theme={theme} variant={'order.lines.line.col.third.col.r'}>
+                                                <Box theme={theme} variant={'order.lines.remove'}>
+                                                    {/*<RemoveIcon width={24} height={24} fill={theme.colors.green}/>*/}
+                                                </Box>
+                                            </Flex>
+                                        </Flex>
+                                    </Flex>
                                 )
                             })}
                         </SwiperSlide></Swiper>
                 </Flex>
             </Flex>
-            {/*<OrderTable>
-                <OrderTableHeader>
-                    <OrderTableRow>
-                        <OrderTableCol fb={'17.7%'} fg={1}>
-                            <Text fontWeight='bold' fontSize={[theme.fontSizes.p22]}>Заказ
-                                №{order.orderNum}</Text>
-                        </OrderTableCol>
-                        <OrderTableCol fb={'43%'} fg={1} textAllign={"left"}>
-                            <Box theme={theme} as={'span'}
-                                 variant='colText'>от {format(order.creationDate, DATE_FORMAT)}, <Box
-                                theme={theme} as={'span'}
-                                variant='colTextOrange'>{format(order.creationDate, TIME_FORMAT)}</Box></Box>
-                        </OrderTableCol>
-                        <OrderTableCol fb={'33.4%'} fg={1} textAlign={"center"}>
-                            <Text fontSize={[theme.fontSizes.p12]}>Кол-во</Text>
-                        </OrderTableCol>
-                        <OrderTableCol fb={'18%'} fg={1} textAlign="right">
-                            <Text fontSize={[theme.fontSizes.p12]}>Статус:</Text>
-                        </OrderTableCol>
-                        <OrderTableCol fb={'20%'} fg={1} textAlign="right">
-                            <OrderTableColStatus>
-                                <OrderTableColIcon>
-                                    <RingBellIcon width={15} height={15} fill={theme.colors.orange}/>
-                                </OrderTableColIcon>
-                                <OrderTableColStatusLink>
-                                    <Link href="#" color={theme.colors.orange}>{order.status.title}</Link>
-                                </OrderTableColStatusLink>
-                            </OrderTableColStatus>
-                        </OrderTableCol>
-                    </OrderTableRow>
-                </OrderTableHeader>
-                <OrderTableBody>
-                    <Swiper direction={'vertical'} slidesPerView={'auto'} freeMode={true} scrollbar={true}
-                            mousewheel={true} className="orderLines">
-                        <SwiperSlide>
-                            {order.lines.map(line => (
-                                <OrderTableRow key={line.orderLineId} minHeight={37} alignItems='center'>
-                                    <OrderTableCol fb={'17.7%'} fg={1}>
-                                        <Text color='black' fontSize={[theme.fontSizes.p14]}>
-                                            {line.article}
-                                        </Text>
-                                    </OrderTableCol>
-                                    <OrderTableCol fb={'43%'} fg={1}>
-                                        <Text color='green' fontSize={[theme.fontSizes.p14]}>
-                                            {line.name}
-                                        </Text>
-                                    </OrderTableCol>
-                                    <OrderTableCol fb={'33.4%'} fg={1}>
-                                        <Flex alignItems='center' justifyContent='flex-end'
-                                              flexDirection='column'>
-                                            <Box>
-                                                <InputNumber value={1}/>
-                                            </Box>
-                                            <OrderColInputNumberBoxUOM>
-                                                {line.uom.value}
-                                            </OrderColInputNumberBoxUOM>
-                                        </Flex>
-                                    </OrderTableCol>
-                                    <OrderTableCol fb={'18%'} fg={1} textAlign="right">
-                                        <Text color='black' textAllign={'center'}
-                                              fontSize={[theme.fontSizes.p14]}>
-                                            {`${currency(line.uom.price, PRICE_FORMAT).format()}/${line.uom.value}`}
-                                        </Text>
-                                    </OrderTableCol>
-                                    <OrderTableCol fb={'20%'} fg={1} textAlign="right">
-                                        <Text color='black' fontWeight='bold'
-                                              fontSize={[theme.fontSizes.p18]}>{currency(line.price, PRICE_FORMAT).format()}</Text>
-                                    </OrderTableCol>
-                                </OrderTableRow>
-                            ))}
-                        </SwiperSlide></Swiper>
-                </OrderTableBody>
-            </OrderTable>*/}
+
             <Flex theme={theme} variant={'controls'} justifyContent={'space-between'}
                   flexWrap={theme.variants.controls}>
                 <Flex theme={theme} variant={'controls.col.l'}
                       width={theme.variants.controls.col.l.width}
                       flexWrap={theme.variants.controls.col.l.flexWrap}>
-                    {/*<Flex theme={theme} variant={'controls.col.l.row'}
+                    <Flex theme={theme} variant={'controls.col.l.row'}
                           width={theme.variants.controls.col.l.row.width}
                           flexWrap={theme.variants.controls.col.l.row.flexWrap}
                           justifyContent={'space-between'}>
@@ -528,13 +484,22 @@ export default function AssemblyConfirm({orderT}) {
                         </Flex>
                         <Flex theme={theme} variant={'controls.col.l.row.r'}
                               width={theme.variants.controls.col.l.row.r.width}>
-                            <Flex theme={theme} variant={'promo.applied'}
+                            {/*<Flex theme={theme} variant={'promo.applied'}
                                   width={theme.variants.promo.applied.width}>
                                 <Box theme={theme} variant={'promo.applied.title'}>Промокод применен</Box>
                                 <Box theme={theme} variant={'promo.applied.promo'}>ERUJD002</Box>
+                            */}
+                            <Flex theme={theme} variant={'promo.applied'}
+                                  width={theme.variants.promo.applied.width}>
+                                <Select components={{DropdownIndicator}}
+                                        isSearchable={false}
+                                        isClearable={false}
+                                        styles={selectStyles}
+                                        options={promoCodeOptions}
+                                        defaultValue={promoCodeOptionDefault}/>
                             </Flex>
                         </Flex>
-                    </Flex>*/}
+                    </Flex>
                     <Flex theme={theme} variant={'controls.col.l.row'}
                           width={theme.variants.controls.col.l.row.width} justifyContent={'space-between'}>
                         <Flex theme={theme} variant={'controls.col.l.row.l.col.l'}
@@ -544,7 +509,11 @@ export default function AssemblyConfirm({orderT}) {
                                 name="comment"
                                 placeholder='Введите комментарий'
                                 label='Комментарий'
+                                value={order.comment}
                                 withLabel
+                                onChange={handleCommentChange}
+                                onBlur={handleCommentsSubmit}
+                                onKeyPress={handleCommentsEnter}
                             />
                         </Flex>
                         <Flex theme={theme} variant={'controls.col.l.row.r.col.r'}
@@ -554,7 +523,11 @@ export default function AssemblyConfirm({orderT}) {
                                 name="serviceComment"
                                 placeholder='Введите комментарий'
                                 label='Служебный комментарий'
+                                value={order.serviceComment}
                                 withLabel
+                                onChange={handleServiceCommentChange}
+                                onBlur={handleCommentsSubmit}
+                                onKeyPress={handleCommentsEnter}
                             />
                         </Flex>
                     </Flex>
@@ -566,27 +539,78 @@ export default function AssemblyConfirm({orderT}) {
                     <Flex theme={theme} variant={'controls.col.r.col.l'}
                           width={theme.variants.controls.col.r.col.l.width} flexDirection={'column'}>
                         <Box theme={theme} variant={'controls.col.r.col.l.col.l'}>
-                            {/*<Button variant='confirm' size='small'>Сборка завершена</Button>*/}
-                            <Input
-                                type="text"
-                                name="comment"
-                                placeholder='Введите промокод'
-                                label='Промокод'
-                                withLabel
-                            />
+                            <Button variant='confirm' size='small'>Отложить</Button>
                         </Box>
-                        {/*<Button variant='cancel' size='small'>Отменить</Button>*/}
+                        <Button variant='cancel' size='small'>Отменить</Button>
                     </Flex>
                     <Flex theme={theme} variant={'controls.col.r.col.r'}
                           width={theme.variants.controls.col.r.col.r.width} flexDirection={'column'}>
                         <Box theme={theme} variant={'mb10'}>
                             <Box theme={theme}
-                                 variant={'totalSum'}>Итого {currency(orderT.totalSum, PRICE_FORMAT).format()}</Box>
+                                 variant={'totalSum'}>Итого {currency(order.totalSum, PRICE_FORMAT).format()}</Box>
                         </Box>
-                        <Button variant='primary' size='xLarge'>Взять в работу</Button>
+                        <Button variant='primary' size='xLarge'>Подтвердить</Button>
                     </Flex>
                 </Flex>
             </Flex>
+            {promoCodePopupOpen && (
+                <Flex theme={theme} variant={'popup'}>
+                    <Flex theme={theme} variant={'popup.overlay'}>
+                        <Box theme={theme} variant={'popup.content'}>
+                            <Flex theme={theme} variant={'popup.close'} justifyContent={'flex-end'}>
+                                <CloseIcon width={24} height={24} fill={theme.colors.black}/>
+                            </Flex>
+                            <Box theme={theme} variant={'popup.modal'}>
+                                <Box theme={theme}
+                                     variant={'popup.modal.title'}>
+                                    Введите промокод
+                                </Box>
+                                <Formik
+                                    initialValues={{username: '', password: ''}}
+                                    validate={validate}
+                                    onSubmit={handleSubmit}
+                                >
+                                    {({
+                                          values,
+                                          errors,
+                                          touched,
+                                          handleChange,
+                                          handleBlur,
+                                          handleSubmit,
+                                          isSubmitting
+                                      }) => (
+                                        <Flex theme={theme}
+                                              variant={'popup.modal.form'}>
+                                            <Flex theme={theme}
+                                                  variant={'popup.modal.form.input'}>
+                                                <Input
+                                                    type="text"
+                                                    name="newPromoCode"
+                                                    onChange={handleChange}
+                                                    onBlur={handleBlur}
+                                                    value={values.newPromoCode}
+                                                    placeholder='Введите промокод'
+                                                    disabled={isSubmitting}
+                                                    variant={'border'}
+                                                    size={'fullWidth'}
+                                                    error={errors.newPromoCode && touched.newPromoCode && errors.newPromoCode}
+                                                    success={touched.newPromoCode && !errors.newPromoCode && messages.newPromoCode.valid}
+                                                />
+                                            </Flex>
+                                            <Button size="xLarge" type="submit"
+                                                    disabled={isSubmitting}>Подтвердить</Button>
+                                        </Flex>
+                                    )}
+                                </Formik>
+
+                            </Box>
+                        </Box>
+                    </Flex>
+                </Flex>
+            )}
+            {someSubmit && (
+                <Loader/>
+            )}
         </Layout>
     )
 }
@@ -600,7 +624,7 @@ async function getOrderServerSideProps({req, res, params}) {
 
     return {
         props: {
-            accessToken: token["access_token"],
+            token: token,
             orderT: data.data
         }
     }

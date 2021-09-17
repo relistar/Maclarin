@@ -53,6 +53,15 @@ export const BASE_API = {
     },
     getOrderById(payload, token) {
         return api.get(`/order/${payload.orderId}`, buildAuthHeader(token))
+    },
+    changeDeliveryType(payload, token) {
+        return jsonApi.post(`/order/${payload.orderId}/delivery-type/${payload.deliveryTypeId}`, null, buildAuthHeader(token));
+    },
+    changeShop(payload, token) {
+        return jsonApi.post(`/order/${payload.orderId}/shop-address/${payload.shopId}`, null, buildAuthHeader(token));
+    },
+    changeComments(query, body, token) {
+        return jsonApi.post(`/order/${query.orderId}`, qs.stringify(body), buildAuthHeader(token));
     }
 }
 
@@ -66,5 +75,34 @@ export const API = {
     },
     getOrderById(payload) {
         return jsonRootApi.get(`/order/${payload.orderId}`)
+    },
+    changeDeliveryType(payload, token) {
+        return jsonRootApi.post(`/order/${payload.orderId}/delivery-type/${payload.deliveryTypeId}`, null, buildAuthHeader(token))
+    },
+    changeShop(payload, token) {
+        return jsonRootApi.post(`/order/${payload.orderId}/shop-address/${payload.shopId}`, null, buildAuthHeader(token))
+    },
+    changeComments(query, body, token) {
+        return jsonRootApi.post(`/order/${query.orderId}/comments`, body, buildAuthHeader(token))
+    },
+    changeDeliveryAddress(query, body, token) {
+        var data = JSON.stringify(2);
+
+        var config = {
+            method: 'post',
+            url: 'https://afanapi.dev-tadoit.ru/api/v1/order/2/delivery_address/',
+            headers: {
+                'accept': 'application/json',
+                'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2MzI1MDMzNjUsInN1YiI6IjEifQ.bVJHsUBIolh1d4BRXyGkiTNaCSM8zYx1cvcXqPxfOgM',
+                'Content-Type': 'application/json'
+            },
+            data : data
+        };
+
+        return axios(config)
+        /*return jsonRootApi.post(`/order/${query.orderId}/delivery_address`, body, buildAuthHeader(token))
+    */},
+    changeOrderLineQuantity(query, body, token) {
+        return jsonRootApi.post(`/order/${query.orderId}/${query.orderLineId}`, body, buildAuthHeader(token))
     }
 }

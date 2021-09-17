@@ -66,7 +66,8 @@ export default {
             maxWidth: breakpoints.xxl,
             minWidth: breakpoints.xs,
             bg: 'bej',
-            mx: 'auto'
+            mx: 'auto',
+            position: 'relative'
         },
         content: {
             px: [17, 17, 34, 34, 53, 53]
@@ -174,11 +175,11 @@ export default {
         },
         orderHeader: {
             display: 'flex',
-            flexWrap: ['wrap', 'wrap', 'nowrap', 'nowrap', 'nowrap', 'nowrap'],
+            flexWrap: ['wrap', 'wrap', 'wrap', 'nowrap', 'nowrap', 'nowrap'],
             justifyContent: 'space-between',
-            mt: [17, 17, 30, 30, 30, 30],
-            mb: ['20px', '20px', '-7px', '-7px', '12px', '12px'],
-            px: [19, 19, 34, 34, 53, 53],
+            mt: [17, 17, 17, 17, 30, 30],
+            mb: ['20px', '20px', '20px', '-7px', '12px', '12px'],
+            px: [19, 19, 19, 19, 53, 53],
             width: '100%',
             field: {
                 title: {
@@ -207,7 +208,7 @@ export default {
                 color: colors.black60,
                 whiteSpace: 'nowrap',
                 icon: {
-                    mr: '17px'
+                    mr: '10px'
                 },
                 method: {
                     fontSize: fontSizes.p14,
@@ -234,8 +235,8 @@ export default {
                     fontSize: fontSizes.p12,
                     color: colors.green,
                     whiteSpace: 'nowrap',
-                    lineHeight: fontSizes.p16,
-                    ml: ['6px','6px','6px','6px','6px','6px']
+                    lineHeight: fontSizes.p18,
+                    ml: ['6px', '6px', '6px', '6px', '6px', '6px']
                 }
             },
             address: {
@@ -251,8 +252,8 @@ export default {
             col: {
                 l: {
                     minHeight: 50,
-                    flexWrap: ['wrap', 'wrap', 'wrap', 'wrap', 'nowrap', 'nowrap'],
-                    width: ['100%', '100%', '100%', '50%', '70%', '70%'],
+                    flexWrap: ['wrap', 'wrap', 'wrap', 'wrap', 'wrap', 'nowrap'],
+                    width: ['100%', '100%', '100%', '100%', '100%', '100%'],
                     col: {
                         l: {
                             flexDirection: 'column',
@@ -268,8 +269,8 @@ export default {
                 },
                 r: {
                     height: 50,
-                    width: ['100%', '100%', '100%', '50%', '30%', '30%'],
-                    justifyContent: ['flex-start', 'flex-start', 'flex-end', 'flex-end', 'flex-end', 'flex-end']
+                    width: ['100%', '100%', '100%', '100%', '100%', '45%'],
+                    justifyContent: ['flex-start', 'flex-start', 'flex-start', 'flex-end', 'flex-end', 'flex-end']
                 }
             }
         },
@@ -357,9 +358,67 @@ export default {
                 }
             }
         },
+        loader: {
+            zIndex: 999,
+            position: 'absolute',
+            background: '#7b7b7b4d',
+            inset: '0px',
+            pointerEvents: 'auto',
+            maxWidth: '1200px',
+            minWidth: '375px',
+            content: {
+                margin: 'auto',
+            }
+        },
+        popup: {
+            overlay: {
+                zIndex: 999,
+                position: 'fixed',
+                background: '#7b7b7b4d',
+                inset: '0px',
+                pointerEvents: 'auto'
+            },
+            content: {
+                position: 'relative',
+                margin: 'auto',
+                maxWidth: 492,
+                borderRadius: 10,
+                width: '90%',
+                backgroundColor: colors.white,
+                color: colors.black60,
+                boxSizing: 'border-box'
+            },
+            close: {
+                width: '100%',
+                p: [16],
+                cursor: 'pointer'
+            },
+            modal: {
+                width: "100%",
+                title: {
+                    fontSize: fontSizes.p14,
+                    color: colors.black60,
+                    width: "100%",
+                    textAlign: 'center',
+                    mt: '6px',
+                    mb: '20px'
+                },
+                form: {
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    px: 42,
+                    pb: '40px',
+                    width: '100%',
+                    input: {
+                        width: '100%',
+                        mb: '10px'
+                    }
+                }
+            }
+        },
         promo: {
             applied: {
-                ml: [0, 0, 0, 0, 0, 0],
+                ml: [-1],
                 width: ['100%'],
                 mb: ['25px', '25px', 13, 13, 13, 13],
                 title: {
@@ -705,7 +764,7 @@ export default {
                         first: {
                             width: ['22%', '22%', '22%', '22%', '22%', '43%'],
                             alignItems: ['flex-start', 'flex-start', 'flex-start', 'flex-start', 'flex-start', 'center'],
-                            flexWrap: ['wrap', 'wrap', 'wrap', 'wrap', 'wrap', 'wrap'],
+                            flexWrap: ['wrap', 'wrap', 'wrap', 'wrap', 'wrap', 'nowrap'],
                             flexDirection: ['column', 'column', 'column', 'column', 'column', 'row'],
                             height: '100%',
                             col: {
@@ -763,6 +822,11 @@ export default {
                     fontSize: fontSizes.p14,
                     color: colors.green
                 },
+                nameBold: {
+                    fontSize: fontSizes.p16,
+                    color: colors.green,
+                    fontWeight: fontWeights.bold
+                },
                 quantity: {
                     fontSize: fontSizes.p14,
                     color: colors.green,
@@ -786,7 +850,9 @@ export default {
                     whiteSpace: 'nowrap',
                     ml: [10]
                 },
-                remove: {}
+                remove: {
+                    minWidth: '24px'
+                }
             }
         }
     },
@@ -897,7 +963,8 @@ export default {
         variants: {
             default: {borderColor: 'none'},
             error: {borderColor: colors.red},
-            success: {borderColor: colors.green}
+            success: {borderColor: colors.green},
+            border: {borderColor: colors.black10},
         },
         sizes: {
             small: {
@@ -909,6 +976,12 @@ export default {
                 height: '45px',
                 borderRadius: '5px',
                 padding: '13px'
+            },
+            fullWidth: {
+                height: '45px',
+                borderRadius: '5px',
+                padding: '13px',
+                width: '100%'
             }
         }
     },
