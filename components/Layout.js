@@ -8,7 +8,7 @@ import {Box, Flex} from "rebass";
 import Link from "./Link";
 import Navbar from "./Navbar";
 
-export default function Layout({children, title, showHeaderButton}) {
+export default function Layout({children, title, showHeaderButton, authorized}) {
     return (
         <>
             <Head>
@@ -32,9 +32,9 @@ export default function Layout({children, title, showHeaderButton}) {
             </Head>
             <Box theme={theme} variant='container'>
                 <Header showButton={showHeaderButton}/>
-                <Navbar/>
+                <Navbar showButton={showHeaderButton}/>
                 {children}
-                <Footer/>
+                <Footer authorized={authorized}/>
             </Box>
         </>
     )

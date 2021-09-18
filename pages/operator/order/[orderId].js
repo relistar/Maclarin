@@ -199,6 +199,54 @@ export default function AssemblyConfirm({orderT, token}) {
         }
     }
 
+    function changeDeliveryPriceState(lineId, value) {
+        console.log(lineId, value)
+        const newOrder = {...order}
+
+        newOrder.lines.forEach(line => {
+            if (lineId === line.order_line_id) {
+                line.price = value
+            }
+        })
+
+        setOrder(newOrder)
+    }
+
+    function deliveryPriceChange(lineId) {
+        return function (value) {
+            changeDeliveryPriceState(lineId, value);
+        }
+    }
+
+    function submitDeliveryPriceChange(value) {
+        const query = {orderId: order.orderId, price: value}
+
+        API.changeDeliveryPrice(query, token).then(res => {
+            const payload = res.data
+            setOrder(payload)
+        }).catch(res => {
+        })
+    }
+
+    function deliveryPriceChangeBlur(lineId) {
+        return function (event) {
+            console.log(event.target)
+
+            changeDeliveryPriceState(lineId, event.target.value);
+            submitDeliveryPriceChange(event.target.value);
+        }
+    }
+
+    function deliveryPriceChangeEnter(lineId) {
+        return function (event) {
+            if (event.key === 'Enter') {
+                changeDeliveryPriceState(lineId, event.target.value);
+                submitDeliveryPriceChange(event.target.value);
+            }
+        }
+    }
+
+
     function handleLineQuantityBlur(lineId) {
         return function (event) {
             console.log(event.target)
@@ -226,7 +274,7 @@ export default function AssemblyConfirm({orderT, token}) {
     };
 
     return (
-        <Layout title={'Заказ оператор'} showHeaderButton>
+        <Layout title={'Заказ оператор'} showHeaderButton authorized>
             <Flex theme={theme} variant={'orderHeader'}>
                 <Flex theme={theme} variant={'orderHeader.col.l'}
                       width={theme.variants.orderHeader.col.l.width}>
@@ -449,7 +497,11 @@ export default function AssemblyConfirm({orderT, token}) {
                                             <Flex theme={theme} variant={'order.lines.line.col.third.col.l'}>
                                                 <Box theme={theme} variant={'order.lines.uomPrice'}>
                                                     <InputNumber dataTitle={'Кол-во'}
-                                                                 dataUom={line.uom.value} value={line.quantity}
+                                                                 dataUom={line.uom.value} value={line.price}
+                                                                 onChangeHandler={()=>{}}
+                                                                 onChangeInputHandler={deliveryPriceChange(line.order_line_id)}
+                                                                 onBlur={deliveryPriceChangeBlur(line.order_line_id)}
+                                                                 onKeyPress={deliveryPriceChangeEnter(line.order_line_id)}
                                                                  withoutButtons/>
                                                 </Box>
                                                 <Box theme={theme} variant={'order.lines.price'}>

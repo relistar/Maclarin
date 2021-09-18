@@ -79,11 +79,25 @@ export default function Home({accessToken}) {
 
         let duration = intervalToDuration(interval);
 
-        return formatDuration(duration, {locale: ruLocale})
+        for(let prop in duration) {
+            if(duration[prop] === 0) {
+                delete duration[prop]
+            }
+        }
+        let objectKeys = Object.keys(duration)
+
+        if(objectKeys.length > 1 && objectKeys.includes('seconds')) {
+            delete duration['seconds']
+        }
+
+        return formatDuration(duration, {
+            locale: ruLocale,
+            format: ['days', 'hours', 'minutes', 'seconds']
+        })
     }
 
     return (
-        <Layout title={'Главный экран оператора'} showHeaderButton>
+        <Layout title={'Главный экран оператора'} showHeaderButton authorized>
             {page && (
                 <Box theme={theme} variant={'main.wrap'}>
                     <Box theme={theme} variant={'main'}>
@@ -113,7 +127,7 @@ export default function Home({accessToken}) {
                                 </Box>
                             </Link>
                             <Box theme={theme} variant={'main.next.timer'}>Время
-                                ожидания: {getTimeFrom(1631464665)}</Box>
+                                ожидания: {getTimeFrom(1631879085)}</Box>
                         </Box>
                         <Flex theme={theme} variant='main.queue' alignItems='center' justifyContent='center'>
                             <Box theme={theme} variant={'main.queue.info.loader'}>

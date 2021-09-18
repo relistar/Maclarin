@@ -100,9 +100,11 @@ export const API = {
         };
 
         return axios(config)
-        /*return jsonRootApi.post(`/order/${query.orderId}/delivery_address`, body, buildAuthHeader(token))
-    */},
+      },
     changeOrderLineQuantity(query, body, token) {
         return jsonRootApi.post(`/order/${query.orderId}/${query.orderLineId}`, body, buildAuthHeader(token))
+    },
+    changeDeliveryPrice(query, token) {
+        return jsonRootApi.post(`/order/${query.orderId}/delivery-price/${query.price}`, '', buildAuthHeader(token))
     }
 }

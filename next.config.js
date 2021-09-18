@@ -4,8 +4,12 @@ module.exports = withPWA({
     async rewrites() {
         return [
             {
-                source: '/api/:path*',
-                destination: 'https://afanapi.dev-tadoit.ru/api/v1/:path*' // Proxy to Backend
+                source: '/api/order/:orderId/delivery-price/:price',
+                destination: 'https://afanapi.dev-tadoit.ru/api/v1/order/:orderId/delivery-price/?price=:price',
+            },
+            {
+                source: '/api/:slug*',
+                destination: 'https://afanapi.dev-tadoit.ru/api/v1/:slug*' // Proxy to Backend
             }
         ]
     },

@@ -78,7 +78,7 @@ const PlusStyled = styled.button`
 `
 
 export default function InputNumber(props) {
-    const {editable = true, withoutButtons = false, onChangeHandler, onChangeInputHandler, min, max, step} = props
+    const {editable = true, withoutButtons = false, onChangeHandler, onChangeInputHandler, min = 0, max = Number.MAX_VALUE, step} = props
 
     function change(event) {
         let value = +event.target.value;

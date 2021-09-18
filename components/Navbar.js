@@ -2,8 +2,10 @@ import theme from "../shared/theme";
 import {Box, Flex} from "rebass";
 import Link from "./Link";
 import React from "react";
+import Button from "./Button";
+import {PlusIcon} from "./Icon";
 
-export default function Navbar() {
+export default function Navbar({showButton}) {
     return (
         <Flex theme={theme}
               variant='navbar'
@@ -19,6 +21,11 @@ export default function Navbar() {
                     <Link href={"#"}>Скрипт</Link>
                 </Box>
             </Flex>
+            {showButton && (
+                <Flex theme={theme} variant={'navbar.btn'}>
+                    <Button variant="dark" size="xSmall" icon={<PlusIcon/>}>Оформить за клиента</Button>
+                </Flex>
+            )}
         </Flex>
     )
 }

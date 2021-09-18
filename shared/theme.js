@@ -125,6 +125,11 @@ export default {
                 fontSize: fontSizes.p12,
                 color: colors.bej,
                 textTransform: 'uppercase'
+            },
+            link: {
+                display: 'flex',
+                justifyContent: 'space-between',
+                width: '100%'
             }
         },
         navbar: {
