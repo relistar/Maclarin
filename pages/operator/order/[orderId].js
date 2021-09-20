@@ -161,7 +161,7 @@ export default function AssemblyConfirm({orderT, token}) {
 
 
     function submitLineQuantityChange(lineId, value) {
-        const query = {orderId: order.orderId, OrderLineId: lineId}
+        const query = {orderId: order.orderId, orderLineId: lineId}
 
         const quantity = {
             quantity: value,
@@ -179,7 +179,7 @@ export default function AssemblyConfirm({orderT, token}) {
         const newOrder = {...order}
 
         newOrder.lines.forEach(line => {
-            if (lineId === line.OrderLineId) {
+            if (lineId === line.orderLineId) {
                 line.quantity = value
             }
         })
@@ -205,7 +205,7 @@ export default function AssemblyConfirm({orderT, token}) {
         const newOrder = {...order}
 
         newOrder.lines.forEach(line => {
-            if (lineId === line.OrderLineId) {
+            if (lineId === line.orderLineId) {
                 line.price = value
             }
         })
@@ -422,7 +422,7 @@ export default function AssemblyConfirm({orderT, token}) {
                         <SwiperSlide>
                             {order.lines.map(line => {
                                 return line.type === 'product' ? (
-                                    <Flex key={line.OrderLineId} theme={theme} variant={'order.lines.line.wrap'} justifyContent={'space-between'}>
+                                    <Flex key={line.orderLineId} theme={theme} variant={'order.lines.line.wrap'} justifyContent={'space-between'}>
                                         <Flex theme={theme} variant={'order.lines.line.wrap.left'}>
                                             <Flex theme={theme} variant={'order.lines.line.wrap.left.first'}>
                                                 <Box theme={theme} variant={'order.lines.line.wrap.article'}>
@@ -442,10 +442,10 @@ export default function AssemblyConfirm({orderT, token}) {
                                                                  min={line.uom.min}
                                                                  max={line.uom.max}
                                                                  step={line.uom.step}
-                                                                 onChangeInputHandler={handleLineQuantityChangeForInput(line.OrderLineId)}
-                                                                 onChangeHandler={handleLineQuantityChangeForButtons(line.OrderLineId)}
-                                                                 onBlur={handleLineQuantityBlur(line.OrderLineId)}
-                                                                 onKeyPress={handleLineQuantityEnter(line.OrderLineId)}/>
+                                                                 onChangeInputHandler={handleLineQuantityChangeForInput(line.orderLineId)}
+                                                                 onChangeHandler={handleLineQuantityChangeForButtons(line.orderLineId)}
+                                                                 onBlur={handleLineQuantityBlur(line.orderLineId)}
+                                                                 onKeyPress={handleLineQuantityEnter(line.orderLineId)}/>
                                                 </Flex>
                                             </Flex>
                                         </Flex>
@@ -458,7 +458,7 @@ export default function AssemblyConfirm({orderT, token}) {
                                                     {currency(line.price, PRICE_FORMAT).format()}
                                                 </Box>
                                             </Flex>
-                                            <Flex theme={theme} variant={'order.lines.line.wrap.remove'} onClick={() => submitDeleteLine(line.OrderLineId)}>
+                                            <Flex theme={theme} variant={'order.lines.line.wrap.remove'} onClick={() => submitDeleteLine(line.orderLineId)}>
                                                 <Box theme={theme} variant={'order.lines.remove'}>
                                                     <RemoveIcon width={24} height={24} fill={theme.colors.green}/>
                                                 </Box>
@@ -470,7 +470,7 @@ export default function AssemblyConfirm({orderT, token}) {
                                     </Flex>
                                 ) : (
 
-                                    <Flex key={line.OrderLineId} theme={theme} variant={'order.lines.line.wrap'} justifyContent={'space-between'}>
+                                    <Flex key={line.orderLineId} theme={theme} variant={'order.lines.line.wrap'} justifyContent={'space-between'}>
                                         <Flex theme={theme} variant={'order.lines.line.wrap.left'}>
                                             <Flex theme={theme} variant={'order.lines.line.wrap.left.first'}>
                                                 <Box theme={theme} variant={'order.lines.line.wrap.article'}>
@@ -488,9 +488,9 @@ export default function AssemblyConfirm({orderT, token}) {
                                                     <InputNumber dataTitle={'Кол-во'}
                                                                  dataUom={line.uom.value} value={line.price}
                                                                  onChangeHandler={()=>{}}
-                                                                 onChangeInputHandler={deliveryPriceChange(line.OrderLineId)}
-                                                                 onBlur={deliveryPriceChangeBlur(line.OrderLineId)}
-                                                                 onKeyPress={deliveryPriceChangeEnter(line.OrderLineId)}
+                                                                 onChangeInputHandler={deliveryPriceChange(line.orderLineId)}
+                                                                 onBlur={deliveryPriceChangeBlur(line.orderLineId)}
+                                                                 onKeyPress={deliveryPriceChangeEnter(line.orderLineId)}
                                                                  withoutButtons/>
                                                 </Flex>
                                             </Flex>
