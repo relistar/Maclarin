@@ -11,7 +11,7 @@ import currency from "currency.js"
 
 import {Swiper, SwiperSlide} from "swiper/react";
 import SwiperCore, {Mousewheel, Scrollbar} from 'swiper/core';
-import {PRICE_FORMAT} from "../../../shared/constants";
+import {DATE_FORMAT, PRICE_FORMAT, TIME_FORMAT} from "../../../shared/constants";
 import AddButton from "../../../components/AddButton";
 import Layout from "../../../components/Layout";
 import {applySession} from "next-iron-session";
@@ -22,6 +22,7 @@ import {selectStyles} from "../../../shared/selectStyles";
 import Select, {components} from "react-select";
 import {Formik} from "formik";
 import DotsLoader from "../../../components/DotsLoader";
+import format from "date-fns/format";
 
 SwiperCore.use([Scrollbar, Mousewheel]);
 
@@ -160,7 +161,7 @@ export default function AssemblyConfirm({orderT, token}) {
 
 
     function submitLineQuantityChange(lineId, value) {
-        const query = {orderId: order.orderId, orderLineId: lineId}
+        const query = {orderId: order.orderId, OrderLineId: lineId}
 
         const quantity = {
             quantity: value,
@@ -178,7 +179,7 @@ export default function AssemblyConfirm({orderT, token}) {
         const newOrder = {...order}
 
         newOrder.lines.forEach(line => {
-            if (lineId === line.order_line_id) {
+            if (lineId === line.OrderLineId) {
                 line.quantity = value
             }
         })
@@ -204,7 +205,7 @@ export default function AssemblyConfirm({orderT, token}) {
         const newOrder = {...order}
 
         newOrder.lines.forEach(line => {
-            if (lineId === line.order_line_id) {
+            if (lineId === line.OrderLineId) {
                 line.price = value
             }
         })
@@ -222,6 +223,17 @@ export default function AssemblyConfirm({orderT, token}) {
         const query = {orderId: order.orderId, price: value}
 
         API.changeDeliveryPrice(query, token).then(res => {
+            const payload = res.data
+            setOrder(payload)
+        }).catch(res => {
+        })
+    }
+
+    function submitDeleteLine(lineId) {
+        const query = {orderId: order.orderId, lineId: lineId}
+        console.log(query)
+
+        API.submitDeleteLine(query, token).then(res => {
             const payload = res.data
             setOrder(payload)
         }).catch(res => {
@@ -346,7 +358,7 @@ export default function AssemblyConfirm({orderT, token}) {
                                 </Flex>
                                 {order.delivery.type.selected === 1 && (
                                     <Box theme={theme}
-                                         variant={'orderHeader.delivery.estimation'}>Доставить 25.07.2021, 00:00</Box>)}
+                                         variant={'orderHeader.delivery.estimation'}>Доставить {format(order.creationDate, DATE_FORMAT)}, {format(order.creationDate, TIME_FORMAT)}</Box>)}
                             </Flex>
                         </Flex>
                         {order.delivery.type.selected === 1 ? (
@@ -363,7 +375,7 @@ export default function AssemblyConfirm({orderT, token}) {
                             </Flex>
                         ) : (
                             <Box theme={theme}
-                                 variant={'orderHeader.delivery.estimation'}>Доставить 25.07.2021, 00:00</Box>
+                                 variant={'orderHeader.delivery.estimation'}>Доставить {format(order.creationDate, DATE_FORMAT)}, {format(order.creationDate, TIME_FORMAT)}</Box>
                         )}
 
                     </Flex>
@@ -380,15 +392,10 @@ export default function AssemblyConfirm({orderT, token}) {
                           width={theme.variants.order.heading.col.l.width}>
                         <Box theme={theme} variant={'order.heading.orderNum'}>Заказ №{order.orderNum}</Box>
                         <Flex theme={theme} variant={'order.heading.date'}>
-                            {/*<Box theme={theme}
-                                 variant={'order.heading.date.dom'}>от {format(order.creationDate, DATE_FORMAT)}</Box>
                             <Box theme={theme}
-                                 variant={'order.heading.date.time'}>{format(order.creationDate, TIME_FORMAT)}</Box>*/}
-
+                                 variant={'order.heading.date.dom'}>от {format(order.creationDate, DATE_FORMAT)},</Box>
                             <Box theme={theme}
-                                 variant={'order.heading.date.dom'}>11.08.2021</Box>
-                            <Box theme={theme}
-                                 variant={'order.heading.date.time'}>01:00</Box>
+                                 variant={'order.heading.date.time'}>{format(order.creationDate, TIME_FORMAT)}</Box>
                         </Flex>
                     </Flex>
                     <Flex theme={theme} variant={'order.heading.col.r'}
@@ -414,103 +421,86 @@ export default function AssemblyConfirm({orderT, token}) {
                             mousewheel={true} className="orderLines">
                         <SwiperSlide>
                             {order.lines.map(line => {
-                                return line.type === 'Товар' ? (
-                                    <Flex theme={theme} variant={'order.lines.line'} justifyContent={'space-between'}
-                                          key={line.order_line_id}>
-                                        <Flex theme={theme}
-                                              variant={'order.lines.line.col.first'}
-                                              justifyContent={theme.variants.order.lines.line.col.first.justifyContent}>
-                                            <Box theme={theme} variant={'order.lines.line.col.first.col.l'}>
-                                                <Box theme={theme} variant={'order.lines.article'}>
+                                return line.type === 'product' ? (
+                                    <Flex key={line.OrderLineId} theme={theme} variant={'order.lines.line.wrap'} justifyContent={'space-between'}>
+                                        <Flex theme={theme} variant={'order.lines.line.wrap.left'}>
+                                            <Flex theme={theme} variant={'order.lines.line.wrap.left.first'}>
+                                                <Box theme={theme} variant={'order.lines.line.wrap.article'}>
                                                     {line.article ? line.article : '---'}
                                                 </Box>
-                                            </Box>
-                                            <Box theme={theme} variant={'oorder.lines.line.col.first.col.r'}>
-                                                <Box theme={theme} variant={'order.lines.name'}>
+                                                <Box theme={theme} variant={'order.lines.line.wrap.name'}>
                                                     {line.name}
                                                 </Box>
-                                            </Box>
-                                        </Flex>
-                                        <Flex theme={theme} variant={'order.lines.line.col.second'}>
-                                            <Box theme={theme} variant={'order.lines.line.col.second.col.l'}>
-                                                <Box theme={theme} variant={'order.lines.quantity'}>
-                                                </Box>
-                                            </Box>
-                                            <Box theme={theme} variant={'order.lines.line.col.second.col.r'}>
-                                                <Box theme={theme} variant={'order.lines.factQuantity'}>
-                                                    {/*<InputNumber dataTitle={'Фактически'} dataUom={line.uom.value}
-                                                                 value={line.factQuantity}/>*/}
-
+                                            </Flex>
+                                            <Flex theme={theme} variant={'order.lines.line.wrap.quantityWrap'}>
+                                                <Flex theme={theme} variant={'order.lines.line.wrap.quantity'}>
+                                                    <Box theme={theme} variant={'order.lines.line.wrap.quantity.name'}>
+                                                        Кол-во
+                                                    </Box>
                                                     <InputNumber dataTitle={'Кол-во'}
                                                                  dataUom={line.uom.value} value={line.quantity}
                                                                  min={line.uom.min}
                                                                  max={line.uom.max}
                                                                  step={line.uom.step}
-                                                                 onChangeInputHandler={handleLineQuantityChangeForInput(line.order_line_id)}
-                                                                 onChangeHandler={handleLineQuantityChangeForButtons(line.order_line_id)}
-                                                                 onBlur={handleLineQuantityBlur(line.order_line_id)}
-                                                                 onKeyPress={handleLineQuantityEnter(line.order_line_id)}/>
-                                                </Box>
-                                            </Box>
+                                                                 onChangeInputHandler={handleLineQuantityChangeForInput(line.OrderLineId)}
+                                                                 onChangeHandler={handleLineQuantityChangeForButtons(line.OrderLineId)}
+                                                                 onBlur={handleLineQuantityBlur(line.OrderLineId)}
+                                                                 onKeyPress={handleLineQuantityEnter(line.OrderLineId)}/>
+                                                </Flex>
+                                            </Flex>
                                         </Flex>
-                                        <Flex theme={theme} variant={'order.lines.line.col.third'}>
-                                            <Flex theme={theme} variant={'order.lines.line.col.third.col.l'}>
-                                                <Box theme={theme} variant={'order.lines.uomPrice'}>
+                                        <Flex theme={theme} variant={'order.lines.line.wrap.right'}>
+                                            <Flex theme={theme} variant={'order.lines.line.wrap.priceBlock'}>
+                                                <Box theme={theme} variant={'order.lines.line.wrap.uomPrice'}>
                                                     {`${currency(line.uom.price, PRICE_FORMAT).format()}/${line.uom.value}`}
                                                 </Box>
-                                                <Box theme={theme} variant={'order.lines.price'}>
+                                                <Box theme={theme} variant={'order.lines.line.wrap.price'}>
                                                     {currency(line.price, PRICE_FORMAT).format()}
                                                 </Box>
                                             </Flex>
-                                            <Flex theme={theme} variant={'order.lines.line.col.third.col.r'}>
+                                            <Flex theme={theme} variant={'order.lines.line.wrap.remove'} onClick={() => submitDeleteLine(line.OrderLineId)}>
                                                 <Box theme={theme} variant={'order.lines.remove'}>
                                                     <RemoveIcon width={24} height={24} fill={theme.colors.green}/>
+                                                </Box>
+                                                <Box theme={theme} variant={'order.lines.line.wrap.removeText'}>
+                                                    Удалить
                                                 </Box>
                                             </Flex>
                                         </Flex>
                                     </Flex>
                                 ) : (
-                                    <Flex theme={theme} variant={'order.lines.line'} justifyContent={'space-between'}
-                                          key={line.order_line_id}>
-                                        <Flex theme={theme}
-                                              variant={'order.lines.line.col.first'}
-                                              justifyContent={theme.variants.order.lines.line.col.first.justifyContent}>
-                                            <Box theme={theme} variant={'order.lines.line.col.first.col.l'}>
-                                                <Box theme={theme} variant={'order.lines.article'}/>
-                                            </Box>
-                                            <Box theme={theme} variant={'oorder.lines.line.col.first.col.r'}>
-                                                <Box theme={theme} variant={'order.lines.nameBold'}>
+
+                                    <Flex key={line.OrderLineId} theme={theme} variant={'order.lines.line.wrap'} justifyContent={'space-between'}>
+                                        <Flex theme={theme} variant={'order.lines.line.wrap.left'}>
+                                            <Flex theme={theme} variant={'order.lines.line.wrap.left.first'}>
+                                                <Box theme={theme} variant={'order.lines.line.wrap.article'}>
+                                                    {'---'}
+                                                </Box>
+                                                <Box theme={theme} variant={'order.lines.line.wrap.name'}>
                                                     {line.name}
                                                 </Box>
-                                            </Box>
-                                        </Flex>
-                                        <Flex theme={theme} variant={'order.lines.line.col.second'}>
-                                            <Box theme={theme} variant={'order.lines.line.col.second.col.l'}>
-                                                <Box theme={theme} variant={'order.lines.quantity'}/>
-                                            </Box>
-                                            <Box theme={theme} variant={'order.lines.line.col.second.col.r'}>
-                                                <Box theme={theme} variant={'order.lines.factQuantity'}>
-                                                </Box>
-                                            </Box>
-                                        </Flex>
-                                        <Flex theme={theme} variant={'order.lines.line.col.third'}>
-                                            <Flex theme={theme} variant={'order.lines.line.col.third.col.l'}>
-                                                <Box theme={theme} variant={'order.lines.uomPrice'}>
+                                            </Flex>
+                                            <Flex theme={theme} variant={'order.lines.line.wrap.quantityWrap'}>
+                                                <Flex theme={theme} variant={'order.lines.line.wrap.quantity'}>
+                                                    <Box theme={theme} variant={'order.lines.line.wrap.quantity.name'}>
+                                                       Цена
+                                                    </Box>
                                                     <InputNumber dataTitle={'Кол-во'}
                                                                  dataUom={line.uom.value} value={line.price}
                                                                  onChangeHandler={()=>{}}
-                                                                 onChangeInputHandler={deliveryPriceChange(line.order_line_id)}
-                                                                 onBlur={deliveryPriceChangeBlur(line.order_line_id)}
-                                                                 onKeyPress={deliveryPriceChangeEnter(line.order_line_id)}
+                                                                 onChangeInputHandler={deliveryPriceChange(line.OrderLineId)}
+                                                                 onBlur={deliveryPriceChangeBlur(line.OrderLineId)}
+                                                                 onKeyPress={deliveryPriceChangeEnter(line.OrderLineId)}
                                                                  withoutButtons/>
-                                                </Box>
-                                                <Box theme={theme} variant={'order.lines.price'}>
-                                                    {currency(line.price, PRICE_FORMAT).format()}
-                                                </Box>
+                                                </Flex>
                                             </Flex>
-                                            <Flex theme={theme} variant={'order.lines.line.col.third.col.r'}>
-                                                <Box theme={theme} variant={'order.lines.remove'}>
-                                                    {/*<RemoveIcon width={24} height={24} fill={theme.colors.green}/>*/}
+                                        </Flex>
+                                        <Flex theme={theme} variant={'order.lines.line.wrap.right'}>
+                                            <Flex theme={theme} variant={'order.lines.line.wrap.priceBlock'}>
+                                                <Box theme={theme} variant={'order.lines.line.wrap.uomPrice'}>
+                                                </Box>
+                                                <Box theme={theme} variant={'order.lines.line.wrap.price'}>
+                                                    {currency(line.price, PRICE_FORMAT).format()}
                                                 </Box>
                                             </Flex>
                                         </Flex>
@@ -536,11 +526,6 @@ export default function AssemblyConfirm({orderT, token}) {
                         </Flex>
                         <Flex theme={theme} variant={'controls.col.l.row.r'}
                               width={theme.variants.controls.col.l.row.r.width}>
-                            {/*<Flex theme={theme} variant={'promo.applied'}
-                                  width={theme.variants.promo.applied.width}>
-                                <Box theme={theme} variant={'promo.applied.title'}>Промокод применен</Box>
-                                <Box theme={theme} variant={'promo.applied.promo'}>ERUJD002</Box>
-                            */}
                             <Flex theme={theme} variant={'promo.applied'}
                                   width={theme.variants.promo.applied.width}>
                                 <Select components={{DropdownIndicator}}

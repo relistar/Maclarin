@@ -760,6 +760,82 @@ export default {
                 height: ['auto', 'auto', 'auto', '356px', '356px', '245px'],
                 boxShadow: '0 30px 25px -20px rgb(232 232 232 / 70%) inset',
                 line: {
+                    wrap: {
+                        borderBottom: [`1px solid ${colors.black20}`, `1px solid ${colors.black20}`, `1px solid ${colors.black20}`, `none`, `none`, `none`],
+                        pb: ['10px', '10px', '10px', '30px', '30px', '30px'],
+                        pt: '15px',
+                        left: {
+                            flexDirection: ['column', 'column', 'column', 'row', 'row', 'row'],
+                            justifyContent: ['none', 'space-between', 'space-between', 'space-between', 'space-between', 'space-between'],
+                            width: ['50%', '50%', '50%', '63%', '67%', '67%'],
+                            first: {
+                                flexDirection: ['column', 'column', 'column', 'column', 'row', 'row']
+                            }
+                        },
+                        right: {
+                            flexDirection: ['column', 'column', 'column', 'row', 'row', 'row'],
+                            width: ['50%', '33%', '33%', '33%', '30%', '33%'],
+                            justifyContent: 'space-between'
+                        },
+                        article: {
+                            fontSize: fontSizes.p14,
+                            color: colors.black,
+                            mb: ['11px'],
+                            width: '124px',
+                            pl: ['0px', '0px', '0px', '0px', '18px', '18px']
+                        },
+                        name: {
+                            fontSize: fontSizes.p14,
+                            color: colors.green,
+                            mb: ['15px']
+                        },
+                        priceBlock: {
+                            justifyContent: ['flex-start', 'flex-start', 'flex-start', 'flex-start', 'flex-start', 'space-between'],
+                            flexDirection: ['column', 'column', 'column', 'column', 'row', 'row'],
+                            alignItems: ['right', 'right', 'right', 'left', 'left', 'left'],
+                            width: ['100%', '100%', '100%', '78%', '78%', '78%']
+                        },
+                        uomPrice: {
+                            fontSize: fontSizes.p14,
+                            color: colors.black,
+                            lineHeight: '20px',
+                            mb: ['11px'],
+                            textAlign: 'right',
+                            width: ['100%', '100%', '100%', '50%', '50%', '50%']
+                        },
+                        price: {
+                            fontSize: [fontSizes.p24, fontSizes.p24, fontSizes.p24, fontSizes.p18, fontSizes.p18, fontSizes.p18],
+                            color: colors.black,
+                            fontWeight: fontWeights.bold,
+                            textAlign: ['right', 'right', 'right', 'right', 'right', 'right'],
+                            width: ['100%', '100%', '100%', '50%', '50%', '50%'],
+                            whiteSpace: 'nowrap'
+                        },
+                        remove: {
+                            justifyContent: 'flex-end',
+                            mr: [0, 0, 0, '10px', '10px', '10px'],
+                            width: ['100%', '100%', '100%', '20%', '20%', '20%']
+                        },
+                        removeText: {
+                            fontSize: fontSizes.p14,
+                            color: colors.green,
+                            lineHeight: '24px',
+                            display: ['block', 'block', 'block', 'none', 'none', 'none']
+
+                        },
+                        quantity: {
+                            flexDirection: 'column',
+                            name: {
+                                fontSize: fontSizes.p12,
+                                textAlign: "center",
+                                mb: '12px',
+                                display: ['block', 'block', 'block', 'block', 'block', 'none']
+                            }
+                        },
+                        quantityWrap: {
+                            justifyContent: 'space-between'
+                        }
+                    },
                     pl: ['11px', '11px', '11px', '11px', '11px', '18px'],
                     pr: ['10px', '10px', '10px', '10px', '10px', '10px'],
                     height: [67, 67, 67, 67, 67, 45],
@@ -769,7 +845,7 @@ export default {
                         first: {
                             width: ['22%', '22%', '22%', '22%', '22%', '43%'],
                             alignItems: ['flex-start', 'flex-start', 'flex-start', 'flex-start', 'flex-start', 'center'],
-                            flexWrap: ['wrap', 'wrap', 'wrap', 'wrap', 'wrap', 'nowrap'],
+                            flexWrap: ['nowrap', 'nowrap', 'nowrap', 'nowrap', 'nowrap', 'nowrap'],
                             flexDirection: ['column', 'column', 'column', 'column', 'column', 'row'],
                             height: '100%',
                             col: {

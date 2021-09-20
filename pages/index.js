@@ -47,7 +47,9 @@ export default function Home({accessToken}) {
             });
 
             ws.addEventListener('message', function (event) {
-                setPage(JSON.parse(event.data))
+                let data = JSON.parse(event.data);
+                console.log(data)
+                setPage(data)
             });
 
             let intervalID = setInterval(function () {
@@ -127,7 +129,7 @@ export default function Home({accessToken}) {
                                 </Box>
                             </Link>
                             <Box theme={theme} variant={'main.next.timer'}>Время
-                                ожидания: {getTimeFrom(1631879085)}</Box>
+                                ожидания: {getTimeFrom(+page.currentOrder.timerStart)}</Box>
                         </Box>
                         <Flex theme={theme} variant='main.queue' alignItems='center' justifyContent='center'>
                             <Box theme={theme} variant={'main.queue.info.loader'}>
