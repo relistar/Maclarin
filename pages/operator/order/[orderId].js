@@ -23,6 +23,7 @@ import Select, {components} from "react-select";
 import {Formik} from "formik";
 import DotsLoader from "../../../components/DotsLoader";
 import format from "date-fns/format";
+import { useRouter } from 'next/router'
 
 SwiperCore.use([Scrollbar, Mousewheel]);
 
@@ -37,21 +38,12 @@ function Loader() {
 }
 
 export default function AssemblyConfirm({orderT, token}) {
-    const [promoCodePopupOpen, setPromoCodePopupOpen] = useState(false)
+    const [statusPopupOpen, setStatusPopupOpen] = useState(false)
     const [someSubmit, setSomeSubmit] = useState(false)
     const [order, setOrder] = useState(orderT)
-
-    const lineTypesMap = {
-        'Товар': 'product',
-        'Услуга': 'service',
-    }
-
-    const messages = {
-        newPromoCode: {
-            valid: 'Промокод введен',
-            invalid: 'Введите промокод'
-        }
-    }
+    const [status, setStatus] = useState(null)
+    const [statusButtonText, setStatusButtonText] = useState(null)
+    const router = useRouter()
 
     const deliveryOptions = order.delivery.type.variants.map(variant => ({
         value: variant.deliveryTypeId,
@@ -73,17 +65,12 @@ export default function AssemblyConfirm({orderT, token}) {
 
     }
 
-    function handleSubmit(values, {setSubmitting}) {
-
-    }
-
     function handleDeliveryTypeChange(arg) {
         const payload = {deliveryTypeId: arg.value, orderId: order.orderId}
 
         API.changeDeliveryType(payload, token).then(res => {
             const payload = res.data
             setOrder(payload)
-            console.log(payload)
         }).catch(res => {
         })
     }
@@ -94,7 +81,6 @@ export default function AssemblyConfirm({orderT, token}) {
         API.changeShop(payload, token).then(res => {
             const payload = res.data
             setOrder(payload)
-            console.log(payload)
         }).catch(res => {
         })
 
@@ -123,7 +109,6 @@ export default function AssemblyConfirm({orderT, token}) {
         API.changeComments(query, comments, token).then(res => {
             const payload = res.data
             setOrder(payload)
-            console.log(payload)
         }).catch(res => {
         })
     }
@@ -153,7 +138,6 @@ export default function AssemblyConfirm({orderT, token}) {
 
         API.changeDeliveryAddress(query, +order.delivery.address, token).then(res => {
             const payload = res.data
-            console.log(payload)
             setOrder(payload)
         }).catch(res => {
         })
@@ -201,7 +185,6 @@ export default function AssemblyConfirm({orderT, token}) {
     }
 
     function changeDeliveryPriceState(lineId, value) {
-        console.log(lineId, value)
         const newOrder = {...order}
 
         newOrder.lines.forEach(line => {
@@ -231,7 +214,6 @@ export default function AssemblyConfirm({orderT, token}) {
 
     function submitDeleteLine(lineId) {
         const query = {orderId: order.orderId, lineId: lineId}
-        console.log(query)
 
         API.submitDeleteLine(query, token).then(res => {
             const payload = res.data
@@ -242,8 +224,6 @@ export default function AssemblyConfirm({orderT, token}) {
 
     function deliveryPriceChangeBlur(lineId) {
         return function (event) {
-            console.log(event.target)
-
             changeDeliveryPriceState(lineId, event.target.value);
             submitDeliveryPriceChange(event.target.value);
         }
@@ -261,8 +241,6 @@ export default function AssemblyConfirm({orderT, token}) {
 
     function handleLineQuantityBlur(lineId) {
         return function (event) {
-            console.log(event.target)
-
             changeOrderLineQuantityState(lineId, event.target.value);
             submitLineQuantityChange(lineId, event.target.value);
         }
@@ -275,6 +253,35 @@ export default function AssemblyConfirm({orderT, token}) {
                 submitLineQuantityChange(lineId, event.target.value);
             }
         }
+    }
+
+    function submitStatusChange(event) {
+        event.stopPropagation()
+
+        const query = {
+            orderId: order.orderId
+        }
+
+        const payload = {
+            status: status,
+            reason_canceled: ''
+        }
+
+        API.changeOrderStatus(query, payload, token).then(res => {
+            setStatusPopupOpen(false)
+            router.push('/')
+        }).catch(res => {
+        })
+    }
+
+    function closeStatusPopup() {
+        setStatusPopupOpen(false)
+    }
+
+    function handleStatusButtonClick(status, text) {
+        setStatus(status)
+        setStatusButtonText(text)
+        setStatusPopupOpen(true)
     }
 
     const DropdownIndicator = props => {
@@ -342,7 +349,8 @@ export default function AssemblyConfirm({orderT, token}) {
                               variant='orderHeader.paymentWrap'
                               alignItems='center'
                               justifyContent={order.delivery.type.selected === 1 ? 'space-between' : 'flex-end'}>
-                            <Flex theme={theme} variant={'orderHeader.payment'} justifyContent={order.delivery.type.selected === 1 ? 'space-between' : 'flex-end'}>
+                            <Flex theme={theme} variant={'orderHeader.payment'}
+                                  justifyContent={order.delivery.type.selected === 1 ? 'space-between' : 'flex-end'}>
                                 <Flex theme={theme} justifyContent={'flex-start'}>
                                     <Box theme={theme} variant={'orderHeader.payment.icon'}>
                                         <CardIcon width={15} height={12} fill={theme.colors.green}/>
@@ -422,7 +430,8 @@ export default function AssemblyConfirm({orderT, token}) {
                         <SwiperSlide>
                             {order.lines.map(line => {
                                 return line.type === 'product' ? (
-                                    <Flex key={line.orderLineId} theme={theme} variant={'order.lines.line.wrap'} justifyContent={'space-between'}>
+                                    <Flex key={line.orderLineId} theme={theme} variant={'order.lines.line.wrap'}
+                                          justifyContent={'space-between'}>
                                         <Flex theme={theme} variant={'order.lines.line.wrap.left'}>
                                             <Flex theme={theme} variant={'order.lines.line.wrap.left.first'}>
                                                 <Box theme={theme} variant={'order.lines.line.wrap.article'}>
@@ -458,7 +467,8 @@ export default function AssemblyConfirm({orderT, token}) {
                                                     {currency(line.price, PRICE_FORMAT).format()}
                                                 </Box>
                                             </Flex>
-                                            <Flex theme={theme} variant={'order.lines.line.wrap.remove'} onClick={() => submitDeleteLine(line.orderLineId)}>
+                                            <Flex theme={theme} variant={'order.lines.line.wrap.remove'}
+                                                  onClick={() => submitDeleteLine(line.orderLineId)}>
                                                 <Box theme={theme} variant={'order.lines.remove'}>
                                                     <RemoveIcon width={24} height={24} fill={theme.colors.green}/>
                                                 </Box>
@@ -470,7 +480,8 @@ export default function AssemblyConfirm({orderT, token}) {
                                     </Flex>
                                 ) : (
 
-                                    <Flex key={line.orderLineId} theme={theme} variant={'order.lines.line.wrap'} justifyContent={'space-between'}>
+                                    <Flex key={line.orderLineId} theme={theme} variant={'order.lines.line.wrap'}
+                                          justifyContent={'space-between'}>
                                         <Flex theme={theme} variant={'order.lines.line.wrap.left'}>
                                             <Flex theme={theme} variant={'order.lines.line.wrap.left.first'}>
                                                 <Box theme={theme} variant={'order.lines.line.wrap.article'}>
@@ -483,11 +494,12 @@ export default function AssemblyConfirm({orderT, token}) {
                                             <Flex theme={theme} variant={'order.lines.line.wrap.quantityWrap'}>
                                                 <Flex theme={theme} variant={'order.lines.line.wrap.quantity'}>
                                                     <Box theme={theme} variant={'order.lines.line.wrap.quantity.name'}>
-                                                       Цена
+                                                        Цена
                                                     </Box>
                                                     <InputNumber dataTitle={'Кол-во'}
                                                                  dataUom={line.uom.value} value={line.price}
-                                                                 onChangeHandler={()=>{}}
+                                                                 onChangeHandler={() => {
+                                                                 }}
                                                                  onChangeInputHandler={deliveryPriceChange(line.orderLineId)}
                                                                  onBlur={deliveryPriceChangeBlur(line.orderLineId)}
                                                                  onKeyPress={deliveryPriceChangeEnter(line.orderLineId)}
@@ -576,9 +588,11 @@ export default function AssemblyConfirm({orderT, token}) {
                     <Flex theme={theme} variant={'controls.col.r.col.l'}
                           width={theme.variants.controls.col.r.col.l.width} flexDirection={'column'}>
                         <Box theme={theme} variant={'controls.col.r.col.l.col.l'}>
-                            <Button variant='confirm' size='small'>Отложить</Button>
+                            <Button variant='confirm' size='small'
+                                    onClick={() => handleStatusButtonClick('delayed', 'Отложить')}>Отложить</Button>
                         </Box>
-                        <Button variant='cancel' size='small'>Отменить</Button>
+                        <Button variant='cancel' size='small'
+                                onClick={() => handleStatusButtonClick('canceled', 'Отменить')}>Отменить</Button>
                     </Flex>
                     <Flex theme={theme} variant={'controls.col.r.col.r'}
                           width={theme.variants.controls.col.r.col.r.width} flexDirection={'column'}>
@@ -586,26 +600,27 @@ export default function AssemblyConfirm({orderT, token}) {
                             <Box theme={theme}
                                  variant={'totalSum'}>Итого {currency(order.totalSum, PRICE_FORMAT).format()}</Box>
                         </Box>
-                        <Button variant='primary' size='xLarge'>Подтвердить</Button>
+                        <Button variant='primary' size='xLarge'
+                                onClick={() => handleStatusButtonClick('confirmed', 'Подтвердить')}>Подтвердить</Button>
                     </Flex>
                 </Flex>
             </Flex>
-            {promoCodePopupOpen && (
+            {statusPopupOpen && (
                 <Flex theme={theme} variant={'popup'}>
-                    <Flex theme={theme} variant={'popup.overlay'}>
+                    <Flex theme={theme} variant={'popup.overlay'} onClick={() => closeStatusPopup()}>
                         <Box theme={theme} variant={'popup.content'}>
-                            <Flex theme={theme} variant={'popup.close'} justifyContent={'flex-end'}>
+                            <Flex theme={theme} variant={'popup.close'} justifyContent={'flex-end'}
+                                  onClick={() => closeStatusPopup()}>
                                 <CloseIcon width={24} height={24} fill={theme.colors.black}/>
                             </Flex>
                             <Box theme={theme} variant={'popup.modal'}>
                                 <Box theme={theme}
                                      variant={'popup.modal.title'}>
-                                    Введите промокод
+                                    Вы уверены?
                                 </Box>
                                 <Formik
                                     initialValues={{username: '', password: ''}}
                                     validate={validate}
-                                    onSubmit={handleSubmit}
                                 >
                                     {({
                                           values,
@@ -620,22 +635,10 @@ export default function AssemblyConfirm({orderT, token}) {
                                               variant={'popup.modal.form'}>
                                             <Flex theme={theme}
                                                   variant={'popup.modal.form.input'}>
-                                                <Input
-                                                    type="text"
-                                                    name="newPromoCode"
-                                                    onChange={handleChange}
-                                                    onBlur={handleBlur}
-                                                    value={values.newPromoCode}
-                                                    placeholder='Введите промокод'
-                                                    disabled={isSubmitting}
-                                                    variant={'border'}
-                                                    size={'fullWidth'}
-                                                    error={errors.newPromoCode && touched.newPromoCode && errors.newPromoCode}
-                                                    success={touched.newPromoCode && !errors.newPromoCode && messages.newPromoCode.valid}
-                                                />
+                                                <Button size="xLarge" type="submit"
+                                                        disabled={isSubmitting}
+                                                        onClick={e => submitStatusChange(e)}>{statusButtonText}</Button>
                                             </Flex>
-                                            <Button size="xLarge" type="submit"
-                                                    disabled={isSubmitting}>Подтвердить</Button>
                                         </Flex>
                                     )}
                                 </Formik>

@@ -27,8 +27,8 @@ const StyledButton = styled.button`
   }
 `
 
-export default function Button({variant = "primary", size = 'large', icon, disabled, children}) {
+export default function Button({variant = "primary", size = 'large', icon, disabled, children, onClick}) {
     return (
-        <StyledButton variant={variant} size={size} disabled={disabled}>{icon}{children}</StyledButton>
+        <StyledButton onClick={onClick} variant={variant} size={size} disabled={disabled}>{icon}{children}</StyledButton>
     )
 }

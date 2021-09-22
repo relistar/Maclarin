@@ -109,5 +109,8 @@ export const API = {
     },
     submitDeleteLine(query, token) {
         return jsonRootApi.delete(`/order/${query.orderId}/${query.lineId}`,  buildAuthHeader(token))
+    },
+    changeOrderStatus(query, body, token) {
+        return jsonRootApi.post(`/order/${query.orderId}/status`, body, buildAuthHeader(token))
     }
 }

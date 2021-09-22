@@ -129,9 +129,6 @@ export default function InputNumber(props) {
     function plus() {
         let value = Math.round((+props.value + Number.EPSILON) * 100) / 100;
         value += step
-
-        console.log(value, max, typeof value,typeof max, value > max )
-
         callButtonsChange(value)
     }
 
