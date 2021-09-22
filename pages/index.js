@@ -13,9 +13,9 @@ import {options} from "../session";
 import fromUnixTime from 'date-fns/fromUnixTime'
 import intervalToDuration from 'date-fns/intervalToDuration'
 import formatDuration from 'date-fns/formatDuration'
-import Link from 'next/link'
 
 import ruLocale from "date-fns/locale/ru";
+import {useRouter} from "next/router";
 
 SwiperCore.use([Navigation]);
 
@@ -25,6 +25,7 @@ export default function Home({accessToken}) {
     const [wsIntervalId, setWsIntervalId] = useState(null)
 
     const isBrowser = typeof window !== "undefined";
+    const router = useRouter()
 
     /*const updateWs = useCallback((url) => {
         if(!isBrowser) return setWsInstance(null);
@@ -40,7 +41,7 @@ export default function Home({accessToken}) {
 
     useEffect(() => {
         if (isBrowser) {
-            const ws = new WebSocket(`wss://afanapi.dev-tadoit.ru/wss/operator?token=${accessToken}`);
+           const ws = new WebSocket(`wss://afanapi.dev-tadoit.ru/wss/operator?token=${accessToken}`);
 
             ws.addEventListener('open', function (event) {
                 ws.send('Hello!');
@@ -54,7 +55,7 @@ export default function Home({accessToken}) {
 
             let intervalID = setInterval(function () {
                 if (wsInstance?.readyState !== 3) {
-                    ws.send("get new info")
+                    ws.send("get q info")
                 }
             }, 5000)
 
@@ -81,14 +82,14 @@ export default function Home({accessToken}) {
 
         let duration = intervalToDuration(interval);
 
-        for(let prop in duration) {
-            if(duration[prop] === 0) {
+        for (let prop in duration) {
+            if (duration[prop] === 0) {
                 delete duration[prop]
             }
         }
         let objectKeys = Object.keys(duration)
 
-        if(objectKeys.length > 1 && objectKeys.includes('seconds')) {
+        if (objectKeys.length > 1 && objectKeys.includes('seconds')) {
             delete duration['seconds']
         }
 
@@ -96,6 +97,13 @@ export default function Home({accessToken}) {
             locale: ruLocale,
             format: ['days', 'hours', 'minutes', 'seconds']
         })
+    }
+
+    function handleGoToOrder(number) {
+        if (wsInstance?.readyState !== 3) {
+            wsInstance.send("get new info")
+            router.push(`/operator/order/${number}`)
+        }
     }
 
     return (
@@ -123,11 +131,9 @@ export default function Home({accessToken}) {
                             </Flex>
                         </Flex>
                         <Box theme={theme} variant={'main.next'}>
-                            <Link href={`/operator/order/2`}>
-                                <Box theme={theme} variant={'main.next.process'}>
-                                    Необходима обработка заказа
-                                </Box>
-                            </Link>
+                            <Box theme={theme} variant={'main.next.process'} onClick={() => handleGoToOrder(2)}>
+                                Необходима обработка заказа
+                            </Box>
                             <Box theme={theme} variant={'main.next.timer'}>Время
                                 ожидания: {getTimeFrom(+page.currentOrder.timerStart)}</Box>
                         </Box>
