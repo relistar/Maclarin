@@ -544,6 +544,10 @@ export default {
                 mb: ['21px', '21px', '40px', '40px', '40px', '40px'],
                 position: 'relative',
                 zIndex: 1,
+                empty: {
+                    textAlign: 'center',
+                    mb: '30px'
+                },
                 process: {
                     position: 'relative',
                     color: colors.white,

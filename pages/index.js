@@ -41,10 +41,10 @@ export default function Home({accessToken}) {
 
     useEffect(() => {
         if (isBrowser) {
-           const ws = new WebSocket(`wss://afanapi.dev-tadoit.ru/wss/operator?token=${accessToken}`);
+            const ws = new WebSocket(`wss://afanapi.dev-tadoit.ru/wss/operator?token=${accessToken}`);
 
             ws.addEventListener('open', function (event) {
-                ws.send('Hello!');
+                ws.send('get q info');
             });
 
             ws.addEventListener('message', function (event) {
@@ -130,13 +130,21 @@ export default function Home({accessToken}) {
                                 </Flex>
                             </Flex>
                         </Flex>
-                        <Box theme={theme} variant={'main.next'}>
-                            <Box theme={theme} variant={'main.next.process'} onClick={() => handleGoToOrder(2)}>
-                                Необходима обработка заказа
+                        {page.currentOrder.orderId ? (
+                            <Box theme={theme} variant={'main.next'}>
+                                <Box theme={theme} variant={'main.next.process'}
+                                     onClick={() => handleGoToOrder(page.currentOrder.orderId)}>
+                                    Необходима обработка заказа
+                                </Box>
+
+                                <Box theme={theme} variant={'main.next.timer'}>Время
+                                    ожидания: {getTimeFrom(+page.currentOrder.timerStart)}</Box>
                             </Box>
-                            <Box theme={theme} variant={'main.next.timer'}>Время
-                                ожидания: {getTimeFrom(+page.currentOrder.timerStart)}</Box>
-                        </Box>
+                        ) : (
+                            <Box theme={theme} variant={'main.next.empty'}>
+                                Нет заказов для обработки
+                            </Box>
+                        )}
                         <Flex theme={theme} variant='main.queue' alignItems='center' justifyContent='center'>
                             <Box theme={theme} variant={'main.queue.info.loader'}>
                                 <DotsLoader/>
