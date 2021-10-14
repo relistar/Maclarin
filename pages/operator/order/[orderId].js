@@ -49,7 +49,8 @@ export default function AssemblyConfirm({orderT, token}) {
         value: variant.deliveryTypeId,
         label: variant.title
     }))
-    const deliveryOptionDefault = deliveryOptions.filter(option => option.value === order.delivery.type.selected)
+
+    const deliveryOptionDefault = deliveryOptions.filter(option => option.value === order.delivery.type.selected.id)
 
     const shopOptions = order.shop.variants.map(variant => ({value: variant.shopId, label: variant.title}))
     const shopOptionDefault = shopOptions.filter(option => option.value === order.shop.selected)
@@ -327,7 +328,7 @@ export default function AssemblyConfirm({orderT, token}) {
                             </Box>
                         </Flex>
                         <Flex theme={theme} variant='orderHeader.address' alignItems='center'>
-                            {order.delivery.type.selected === 1 ? (
+                            {order.delivery.type.selected.type === "delivery" ? (
                                 <Box theme={theme} variant={'orderHeader.field.title'}>Адрес сборки</Box>) : (
                                 <Box theme={theme} variant={'orderHeader.field.title'}>Адрес самовывоза</Box>)}
                             <Box theme={theme} variant={'orderHeader.field.value'}>
@@ -348,15 +349,15 @@ export default function AssemblyConfirm({orderT, token}) {
                         <Flex theme={theme}
                               variant='orderHeader.paymentWrap'
                               alignItems='center'
-                              justifyContent={order.delivery.type.selected === 1 ? 'space-between' : 'flex-end'}>
+                              justifyContent={order.delivery.type.selected.type === "delivery" ? 'space-between' : 'flex-end'}>
                             <Flex theme={theme} variant={'orderHeader.payment'}
-                                  justifyContent={order.delivery.type.selected === 1 ? 'space-between' : 'flex-end'}>
+                                  justifyContent={order.delivery.type.selected.type === "delivery" ? 'space-between' : 'flex-end'}>
                                 <Flex theme={theme} justifyContent={'flex-start'}>
                                     <Box theme={theme} variant={'orderHeader.payment.icon'}>
                                         <CardIcon width={15} height={12} fill={theme.colors.green}/>
                                     </Box>
                                     <Box theme={theme}
-                                         variant={'orderHeader.payment.method'}>Картой</Box>/
+                                         variant={'orderHeader.payment.method'}>{order.paymentInfo.type.title}</Box>/
                                     {order.paymentInfo.status.isPaid ? (
                                         <Box theme={theme}
                                              variant={'orderHeader.payment.statusPaid'}>{order.paymentInfo.status.title}</Box>
@@ -364,12 +365,12 @@ export default function AssemblyConfirm({orderT, token}) {
                                         <Box theme={theme}
                                              variant={'orderHeader.payment.status'}>{order.paymentInfo.status.title}</Box>)}
                                 </Flex>
-                                {order.delivery.type.selected === 1 && (
+                                {order.delivery.type.selected.type === "delivery"  && (
                                     <Box theme={theme}
-                                         variant={'orderHeader.delivery.estimation'}>Доставить {format(order.creationDate, DATE_FORMAT)}, {format(order.creationDate, TIME_FORMAT)}</Box>)}
+                                         variant={'orderHeader.delivery.estimation'}>Доставить {format(order.creationDate * 1000, DATE_FORMAT)}, {format(order.creationDate * 1000, TIME_FORMAT)}</Box>)}
                             </Flex>
                         </Flex>
-                        {order.delivery.type.selected === 1 ? (
+                        {order.delivery.type.selected.type === "delivery" ? (
                             <Flex theme={theme} variant='orderHeader.address' alignItems='center'>
                                 <Box theme={theme} variant={'orderHeader.field.title'}>Адрес доставки</Box>
                                 <Box theme={theme} variant={'orderHeader.field.value'}>
@@ -383,7 +384,7 @@ export default function AssemblyConfirm({orderT, token}) {
                             </Flex>
                         ) : (
                             <Box theme={theme}
-                                 variant={'orderHeader.delivery.estimation'}>Доставить {format(order.creationDate, DATE_FORMAT)}, {format(order.creationDate, TIME_FORMAT)}</Box>
+                                 variant={'orderHeader.delivery.estimation'}>Доставить {format(order.creationDate * 1000, DATE_FORMAT)}, {format(order.creationDate * 1000, TIME_FORMAT)}</Box>
                         )}
 
                     </Flex>
@@ -401,9 +402,9 @@ export default function AssemblyConfirm({orderT, token}) {
                         <Box theme={theme} variant={'order.heading.orderNum'}>Заказ №{order.orderNum}</Box>
                         <Flex theme={theme} variant={'order.heading.date'}>
                             <Box theme={theme}
-                                 variant={'order.heading.date.dom'}>от {format(order.creationDate, DATE_FORMAT)},</Box>
+                                 variant={'order.heading.date.dom'}>от {format(order.creationDate * 1000, DATE_FORMAT)},</Box>
                             <Box theme={theme}
-                                 variant={'order.heading.date.time'}>{format(order.creationDate, TIME_FORMAT)}</Box>
+                                 variant={'order.heading.date.time'}>{format(order.creationDate * 1000, TIME_FORMAT)}</Box>
                         </Flex>
                     </Flex>
                     <Flex theme={theme} variant={'order.heading.col.r'}
